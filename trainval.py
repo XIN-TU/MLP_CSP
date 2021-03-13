@@ -14,8 +14,8 @@ from dataloader.loader import *
 from utils.functions import parse_det_offset
 from eval_city.eval_script.eval_demo import validate
 
-from apex import amp
-from apex.parallel import DistributedDataParallel as DDP 
+# from apex import amp
+# from apex.parallel import DistributedDataParallel as DDP 
 
 import datetime
 import os
@@ -42,8 +42,8 @@ def main():
     offset = loss_offset().cuda()
 
     optimizer = optim.Adam(net.parameters(), lr=cfg.init_lr)
-    amp.register_float_function(torch, 'sigmoid')
-    net, optimizer = amp.initialize(net, optimizer, opt_level='O1')
+    # amp.register_float_function(torch, 'sigmoid')
+    # net, optimizer = amp.initialize(net, optimizer, opt_level='O1')
 
     if args.resume:
         def resume():
@@ -52,7 +52,7 @@ def main():
                 args.start_epoch = checkpoint['epoch']
                 net.load_state_dict(checkpoint['model'])
                 optimizer.load_state_dict(checkpoint['optimizer'])
-                amp.load_state_dict(checkpoint['amp'])
+                # amp.load_state_dict(checkpoint['amp'])
                 print("=>loading checkpoint'{}'".format(args.resume))
                 print("=>loaded checkpoint '{}'(epoch {})"
                     .format(args.resume, checkpoint['epoch']))
@@ -135,7 +135,7 @@ def main():
             checkpoint = {
             'epoch': epoch+1,
             'optimizer': optimizer.state_dict(),
-            'amp': amp.state_dict()
+            # 'amp': amp.state_dict()
             }
             if cfg.teacher:
                 checkpoint['model'] = teacher_dict
@@ -175,8 +175,8 @@ def train(trainloader, net, criterion, center, height, offset, optimizer, epoch,
         loss = cls_loss + reg_loss + off_loss
 
         # loss.backward()
-        with amp.scale_loss(loss, optimizer) as scale_loss:
-            scale_loss.backward()
+        # with amp.scale_loss(loss, optimizer) as scale_loss:
+        #     scale_loss.backward()
 
         # update param
         optimizer.step()
