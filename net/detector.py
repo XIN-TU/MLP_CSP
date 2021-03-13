@@ -26,6 +26,7 @@ class CSP(nn.Module):
 		self.head.init_weights()
 
 	def forward(self, x):
+		x = x.type(torch.cuda.FloatTensor)
 		features = self.backbone(x)
 		cls_map, reg_map, off_map = self.head(features)
 		return cls_map, reg_map, off_map

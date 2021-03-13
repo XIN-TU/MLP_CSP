@@ -175,8 +175,8 @@ def train(trainloader, net, criterion, center, height, offset, optimizer, epoch,
         loss = cls_loss + reg_loss + off_loss
 
         # loss.backward()
-        # with amp.scale_loss(loss, optimizer) as scale_loss:
-        #     scale_loss.backward()
+        with amp.scale_loss(loss, optimizer) as scale_loss:
+            scale_loss.backward()
 
         # update param
         optimizer.step()
