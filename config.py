@@ -18,7 +18,9 @@ class Config(object):
         # self.target_ratio = (1, 0.1)
 
         # dataset
-        self.root_path = '/data/datasets/Citypersons'     # the path to your citypersons dataset  
+        self.root_path = 'data/datasets/Citypersons'     # the path to your citypersons dataset
+        self.branch = 'eval_city/'
+        self.ckpt_path = 'outputs/'
 
         # setting for data augmentation
         self.use_horizontal_flips = True

@@ -24,6 +24,7 @@ We will **continuously update this repo**, and add some useful tricks (e.g. data
 ### Prerequisites
 - Pytorch 1.2+
 - Python 3.6+
+- pip install numpy==1.17.5
 - APEX (Install APEX following the [offical instruction](https://github.com/NVIDIA/apex))
 
 ### Installation

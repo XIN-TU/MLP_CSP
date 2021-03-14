@@ -37,34 +37,67 @@ class CityPersons(Dataset):
             print('')
   
     def __getitem__(self, item):
+        # img_data = self.dataset[item]
+        # if self.preloaded:
+        #     img = self.img_cache[item]
+        # else:
+        #     img = cv2.imread(img_data['filepath'])
+        # if self.type == 'train':
+        #     img_data, x_img = data_augment.augment(self.dataset[item], self.config, img)
+
+        #     gts = img_data['bboxes'].copy()
+        #     igs = img_data['ignoreareas'].copy()
+
+        #     y_center, y_height, y_offset = self.calc_gt_center(gts, igs, radius=2, stride=self.config.down)
+
+        #     # x_img = x_img.astype(np.float32)
+        #     # x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
+        #     # x_img = (x_img - self.config.norm_mean) / self.config.norm_std
+        #     # x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
+        #     if self.transform is not None:
+        #             x_img = self.transform(x_img)
+
+        #     return x_img, [y_center, y_height, y_offset]
+
+        # else:
+        #     # (h, w) = self.config.size_test
+        #     # # (h_ori, w_ori) = img.shape[:2]
+        #     # img = cv2.resize(img, (w, h))
+        #     # # scale_factor = min(h/h_ori, w/w_ori)
+        #     # x_img = img.astype(np.float32)
+        #     # x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
+        #     # x_img = (x_img - self.config.norm_mean) / self.config.norm_std
+        #     # x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
+        #     if self.transform is not None:
+        #             x_img = self.transform(img)
+        #     else:
+        #             x_img = img
+        #     return x_img
         img_data = self.dataset[item]
         if self.preloaded:
             img = self.img_cache[item]
         else:
-            img = cv2.imread(img_data['filepath'])
-        if self.type == 'train':
-            img_data, x_img = data_augment.augment(self.dataset[item], self.config, img)
+            img = Image.open(img_data['filepath'])
 
+        if self.type == 'train':
             gts = img_data['bboxes'].copy()
             igs = img_data['ignoreareas'].copy()
 
+            x_img, gts, igs = self.preprocess(img, gts, igs)
+
             y_center, y_height, y_offset = self.calc_gt_center(gts, igs, radius=2, stride=self.config.down)
 
-            x_img = x_img.astype(np.float32)
-            x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
-            x_img = (x_img - self.config.norm_mean) / self.config.norm_std
-            x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
+            if self.transform is not None:
+                x_img = self.transform(x_img)
+
             return x_img, [y_center, y_height, y_offset]
 
         else:
-            (h, w) = self.config.size_test
-            # (h_ori, w_ori) = img.shape[:2]
-            img = cv2.resize(img, (w, h))
-            # scale_factor = min(h/h_ori, w/w_ori)
-            x_img = img.astype(np.float32)
-            x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
-            x_img = (x_img - self.config.norm_mean) / self.config.norm_std
-            x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
+            if self.transform is not None:
+                x_img = self.transform(img)
+            else:
+                x_img = img
+
             return x_img
 
     def __len__(self):

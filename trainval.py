@@ -64,6 +64,7 @@ def main():
 
     if cfg.teacher:
         teacher_dict = net.state_dict()
+        exit(1) #TODO:
     else:
         teacher_dict = None
 
@@ -77,11 +78,16 @@ def main():
     batchsize = cfg.onegpu
     args.epoch_length = int(cfg.iter_per_epoch / (num_gpus*batchsize))
     
-    traindataset = CityPersons(path=cfg.root_path, type='train', config=cfg)
+    trainTransform = Compose(
+    [ColorJitter(brightness=0.5), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+
+    traindataset = CityPersons(path=cfg.root_path, type='train', config=cfg, transform=trainTransform)
+
     trainloader = DataLoader(traindataset, batch_size=batchsize, shuffle=True, num_workers=8)
 
     if cfg.val:
-        testdataset = CityPersons(path=cfg.root_path, type='val', config=cfg)
+        testTransform = Compose([ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+        testdataset = CityPersons(path=cfg.root_path, type='val', config=cfg, transform=testTransform,preloaded=True)
         testloader = DataLoader(testdataset, batch_size=1, num_workers=4)
 
     cfg.ckpt_path = args.work_dir
@@ -175,8 +181,8 @@ def train(trainloader, net, criterion, center, height, offset, optimizer, epoch,
         loss = cls_loss + reg_loss + off_loss
 
         # loss.backward()
-        with amp.scale_loss(loss, optimizer) as scale_loss:
-            scale_loss.backward()
+        # with amp.scale_loss(loss, optimizer) as scale_loss:
+        #     scale_loss.backward()
 
         # update param
         optimizer.step()
