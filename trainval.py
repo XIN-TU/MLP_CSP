@@ -64,7 +64,7 @@ def main():
 
     if cfg.teacher:
         teacher_dict = net.state_dict()
-        exit(1) #TODO:
+        # exit(1) #TODO:
     else:
         teacher_dict = None
 

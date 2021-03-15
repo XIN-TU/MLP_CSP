@@ -5,7 +5,7 @@ class Config(object):
 
         # training config
         self.onegpu = 2
-        self.num_epochs = 70
+        self.num_epochs = 120
         self.add_epoch = 0
         self.iter_per_epoch = 2000 
         self.init_lr = 2e-4
@@ -35,7 +35,7 @@ class Config(object):
         # whether or not to perform validation during training
         self.val = True
         self.val_frequency = 2
-        self.val_begin = 30
+        self.val_begin = 120
 
         # whether ot not to use the strategy of weight moving average 
         self.teacher = True     

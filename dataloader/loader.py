@@ -54,7 +54,7 @@ class CityPersons(Dataset):
             x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
             x_img = (x_img - self.config.norm_mean) / self.config.norm_std
             x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
-            x_img = x_img.type(torch.FloatTensor)
+            x_img = x_img.type(torch.FloatTensor)  # 转Float
 
             return x_img, [y_center, y_height, y_offset]
 
@@ -67,7 +67,8 @@ class CityPersons(Dataset):
             x_img = cv2.cvtColor(x_img, cv2.COLOR_BGR2RGB)
             x_img = (x_img - self.config.norm_mean) / self.config.norm_std
             x_img = torch.from_numpy(x_img.transpose(2, 0, 1))
-            x_img = x_img.type(torch.FloatTensor)
+            x_img = x_img.type(torch.FloatTensor)  # 转Float
+        
             return x_img
 
         # img_data = self.dataset[item]
